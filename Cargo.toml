@@ -1,0 +1,20 @@
+[workspace]
+resolver = "3"
+members = ["mtpkit", "mtpkit-cli", "mtpkit-gui"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "LGPL-2.1-or-later"
+repository = "https://github.com/obazin/mtpkit"
+
+[workspace.dependencies]
+mtpkit = { path = "mtpkit", version = "0.1.0" }
+anyhow = "1"
+futures-lite = "2"
+nusb = "0.1"
+rustyline = "14"
+
+[profile.release]
+lto = true
+strip = true

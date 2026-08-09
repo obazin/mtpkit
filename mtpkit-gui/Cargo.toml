@@ -1,0 +1,10 @@
+[package]
+name = "mtpkit-gui"
+description = "Graphical MTP client for Android devices (placeholder — not yet implemented)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+mtpkit.workspace = true

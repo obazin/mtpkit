@@ -1,0 +1,12 @@
+[package]
+name = "mtpkit"
+description = "Pure-Rust MTP (Media Transfer Protocol) client library — no libusb, no kernel driver"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+futures-lite.workspace = true
+nusb.workspace = true

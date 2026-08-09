@@ -1,0 +1,19 @@
+[package]
+name = "mtpkit-cli"
+description = "MTP client for Android devices: interactive shell and one-shot file transfer commands"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "mtpkit"
+path = "src/main.rs"
+# The binary would collide with the mtpkit library in cargo doc output;
+# the CLI is documented by its README and module comments instead.
+doc = false
+
+[dependencies]
+mtpkit.workspace = true
+anyhow.workspace = true
+rustyline.workspace = true
