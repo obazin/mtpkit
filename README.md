@@ -18,8 +18,11 @@ With Nix (the flake pins the whole toolchain — pair it with direnv and `use fl
 
 ```
 nix build          # → result/bin/mtpkit
-nix develop        # dev shell: cargo, rustc, clippy, rustfmt, rust-analyzer
+nix develop        # dev shell: pinned toolchain, cargo tools, LSPs, formatters
+nix flake check    # fmt + clippy + the test suite, on that same toolchain
 ```
+
+The pin lives in [`obazin/rust-projects`](https://github.com/obazin/rust-projects), the shared flake this one consumes: the compiler is a fixed-output derivation there, so `nix flake update` cannot move it and bumping Rust is a single commit for every project at once.
 
 Plain cargo works too, with any Rust toolchain supporting edition 2024 (1.85+):
 

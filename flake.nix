@@ -1,47 +1,34 @@
 {
   description = "mtpkit — pure-Rust MTP library, CLI and (future) GUI for Android devices";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  # The toolchain pin lives in rust-projects, not here — nixpkgs' own rustc
+  # moved with every input update before this. Do not add a rust-toolchain.toml:
+  # the dev shell materializes the shared one at the project root so rustup and
+  # Nix agree, and there is only ever one pin to bump.
+  inputs.rust-projects.url = "github:obazin/rust-projects";
 
   outputs =
-    { self, nixpkgs }:
-    let
-      lib = nixpkgs.lib;
-      systems = [
-        "aarch64-darwin"
-        "x86_64-darwin"
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-      forAllSystems = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
-    in
-    {
-      packages = forAllSystems (pkgs: rec {
-        default = mtpkit-cli;
-        mtpkit-cli = pkgs.rustPlatform.buildRustPackage {
-          pname = "mtpkit";
-          version = "0.1.0";
-          src = lib.cleanSource self;
-          cargoLock.lockFile = ./Cargo.lock;
-          meta = {
-            description = "MTP client for Android devices: interactive shell and file transfer commands";
-            license = lib.licenses.lgpl21Plus;
-            mainProgram = "mtpkit";
-          };
-        };
-      });
+    { rust-projects, ... }:
+    rust-projects.forEachSystem (
+      lib:
+      let
+        # Virtual manifest — no [package] to read pname/version from, so the
+        # version comes from the workspace table rather than a second copy.
+        workspace = (builtins.fromTOML (builtins.readFile ./Cargo.toml)).workspace;
+      in
+      lib.mkRustProject {
+        name = "mtpkit";
+        src = ./.;
 
-      devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            cargo
-            rustc
-            rustfmt
-            clippy
-            rust-analyzer
-          ];
-          env.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
+        pname = "mtpkit";
+        version = workspace.package.version;
+
+        meta = {
+          description = "MTP client for Android devices: interactive shell and file transfer commands";
+          license = lib.pkgs.lib.licenses.lgpl21Plus;
+          # The binary the mtpkit-cli crate ships.
+          mainProgram = "mtpkit";
         };
-      });
-    };
+      }
+    );
 }

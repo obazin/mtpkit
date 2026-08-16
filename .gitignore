@@ -1,3 +1,11 @@
 /target
 /result
 /.direnv
+
+# Materialized by the dev shell as a symlink into the Nix store — the
+# canonical pin lives in github:obazin/rust-projects.
+/rust-toolchain.toml
+
+# CARGO_HOME is pinned to the project root by the dev shell, so the
+# registry and its lock files land here.
+/.cargo
