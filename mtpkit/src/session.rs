@@ -139,7 +139,12 @@ impl<P: Pipe> Session<P> {
         if code != ptp::RESP_OK {
             bail!("device returned {}", response_name(code));
         }
-        Ok(payload.chunks_exact(4).map(u32le).collect())
+        Ok(payload
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|bytes| u32::from_le_bytes(*bytes))
+            .collect())
     }
 
     /// Operation with no data phase.
